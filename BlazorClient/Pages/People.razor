@@ -1,0 +1,90 @@
+﻿@page "/people"
+@inject GrpcChannel Channel
+@using Google.Protobuf.WellKnownTypes
+@using Person
+
+<h1>People</h1>
+
+<p>This component demonstrates adding and getting people from MongoDb.</p>
+
+@if (_people == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Date of birth</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in _people)
+            {
+                <tr>
+                    <td>@person.Firstname</td>
+                    <td>@person.Lastname</td>
+                    <td>@person.Dob.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <EditForm Model=@Person OnSubmit="OnSubmit">
+        <DataAnnotationsValidator/>
+        <div class="form-group">
+            <label for="FirstName">First Name</label>
+            <InputText @bind-Value=Person.Firstname class="form-control" id="FirstName"/>
+        </div>
+        <div class="form-group">
+            <label for="LastName">Last name</label>
+            <InputText @bind-Value=Person.Lastname class="form-control" id="LastName"/>
+        </div>
+        <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <InputDate @bind-Value=Person.Dob class="form-control" id="dob"></InputDate>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Save"/>
+    </EditForm>
+</div>
+
+<div>
+    <p>
+        Data is fetched from a gRPC Service
+    </p>
+</div>
+
+@code {
+    private IList<PersonsDto>? _people;
+    private PersonsDto Person;
+    private PersonService.PersonServiceClient _client;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Person = new PersonsDto();
+        _client = new PersonService.PersonServiceClient(Channel);
+        _people = (await _client.GetPersonsAsync(new Empty())).People;
+    }
+
+    private async Task OnSubmit()
+    {
+        try
+        {
+            await _client.AddPersonAsync(new AddPersonRequest() { Firstname = Person.Firstname, Lastname = Person.Lastname, Dob = Person.DateOfBirth });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+    }
+
+}

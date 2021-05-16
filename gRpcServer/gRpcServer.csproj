@@ -8,9 +8,15 @@
     <Protobuf Include="..\Proto\greet.proto" GrpcServices="Server" Link="Protos\greet.proto" />
     <Protobuf Include="..\Proto\weather.proto" GrpcServices="Server" Link="Protos\weather.proto" />
     <Protobuf Include="..\Proto\count.proto" GrpcServices="Server" Link="Protos\count.proto" />
+    <Protobuf Include="..\Proto\persons.proto" GrpcServices="Server" Link="Protos\persons.proto" />
 
-    <PackageReference Include="Grpc.AspNetCore" Version="2.35.0" />
-    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.35.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.37.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.37.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\NoSql.Core\NoSql.Core.csproj" />
+    <ProjectReference Include="..\NoSql.DataAccess\NoSql.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+package person;
+
+service PersonService {
+	rpc GetPersons (google.protobuf.Empty) returns (GetPersonsResponse);
+	rpc AddPerson (AddPersonRequest) returns (AddPersonResponse);
+}
+
+message AddPersonRequest {
+	string firstname = 1;
+	string lastname = 2;
+	google.protobuf.Timestamp dob = 3;
+}
+
+message AddPersonResponse {
+	bool success =1;
+	string error_message = 2;
+}
+
+message GetPersonsResponse {
+	repeated PersonsDto people = 1;
+}
+
+message PersonsDto {
+	string firstname = 1;
+	string lastname = 2;
+	google.protobuf.Timestamp date_of_birth = 3;	
+}
